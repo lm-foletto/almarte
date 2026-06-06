@@ -18,9 +18,12 @@ const C = {
   line: "#E8E1D6",
 };
 
-/* WhatsApp placeholder — troque 55SEUNUMERO pelo número real */
-const WA_NUMBER = "5599984077";
-const IG_HANDLE = "almarte.arts";
+/* App runtime config (can be generated from a local .env -> config.js)
+  Provide a `config.js` that sets `window.APP_CONFIG = { ... }` and include it
+  before `data.jsx` in `index.html`. Values below are safe fallbacks. */
+const APP_CFG = window.APP_CONFIG || {};
+const WA_NUMBER = APP_CFG.WA_NUMBER || "5599984077";
+const IG_HANDLE = APP_CFG.IG_HANDLE || "almarte.arts";
 
 /* -------- Collection: feelings that became works (painterly placeholders)
    Ordered as a deliberate emotional arc:
@@ -170,9 +173,9 @@ const T = {
       title: "Da conversa à sua parede.",
       steps: [
         { icon: "chat", title: "Escolha ou co-crie", body: "Uma obra da coleção ou uma história só sua." },
-        { icon: "brush", title: "A artista pinta", body: "À mão, devagar, interpretando a sua direção." },
-        { icon: "box", title: "Embalagem segura", body: "Proteção e envio até sua casa." },
-        { icon: "frame", title: "Na sua parede", body: "Consulte disponibilidade de entrega pelo WhatsApp." },
+        { icon: "brush", title: "The artist paints", body: "By hand, slowly, interpreting your direction." },
+        { icon: "box", title: "Secure packaging", body: "Professional protection for safe shipping." },
+        { icon: "frame", title: "On your wall", body: "Delivery across Brazil." },
       ],
     },
     invite: {
@@ -372,7 +375,38 @@ function useScrollParallax() {
   return [ref, offset];
 }
 
+// Google Sheet ID and Apps Script endpoint — prefer values from APP_CONFIG
+const GOOGLE_SHEET_ID = APP_CFG.GOOGLE_SHEET_ID || "1AseYb2Nmx2ZCW7y7LTpMb2NJ_XBGsXPpZiUREoLyLjo";
+const SHEET_ENDPOINT = APP_CFG.SHEET_ENDPOINT || "https://script.google.com/macros/s/AKfycbzRvCwP0BqwUOOUClOeYUVe432SV6im-rBxv2TBzw41iEP9Yi8iOMkIzT396GRWp10Q9Q/exec";
+
+async function sendToGoogleSheet(payload) {
+  if (!SHEET_ENDPOINT) return false;
+  try {
+    await fetch(SHEET_ENDPOINT, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=UTF-8" },
+      body: JSON.stringify(payload),
+    });
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
 window.AL = { C, T, collection, HERO_PALETTE, OVERTURE_PALETTE, WA_NUMBER, IG_HANDLE };
 window.useReveal = useReveal;
 window.Reveal = Reveal;
 window.useScrollParallax = useScrollParallax;
+// Email validation helper (simple, practical): returns true for strings like name@domain.tld
+function isValidEmail(email) {
+  if (!email) return false;
+  try {
+    const v = String(email).trim();
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  } catch (e) {
+    return false;
+  }
+}
+window.isValidEmail = isValidEmail;
+window.sendToGoogleSheet = sendToGoogleSheet;

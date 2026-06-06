@@ -13,10 +13,35 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      SHEET_ENDPOINT: ${{ secrets.SHEET_ENDPOINT }}
+      GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+      WA_NUMBER: ${{ secrets.WA_NUMBER }}
+      IG_HANDLE: ${{ secrets.IG_HANDLE }}
+      MUSIC_SRC: ${{ vars.MUSIC_SRC }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/configure-pages@v4
-      - uses: actions/upload-pages-artifact@v1
+
+      - name: Generate runtime config
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+
+          config = {
+              "SHEET_ENDPOINT": os.getenv("SHEET_ENDPOINT", ""),
+              "GOOGLE_SHEET_ID": os.getenv("GOOGLE_SHEET_ID", ""),
+              "WA_NUMBER": os.getenv("WA_NUMBER", ""),
+              "IG_HANDLE": os.getenv("IG_HANDLE", ""),
+              "MUSIC_SRC": os.getenv("MUSIC_SRC", "audio/NearLight.wav"),
+          }
+          with open("config.js", "w", encoding="utf-8") as f:
+              f.write("window.APP_CONFIG = " + json.dumps(config, ensure_ascii=False) + ";\n")
+          PY
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: ./
-      - uses: actions/deploy-pages@v1
+      - uses: actions/deploy-pages@v4

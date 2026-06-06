@@ -451,15 +451,33 @@ function Result({ result, j, lang, answers, onRestart }) {
   );
   const waLink = `https://wa.me/${ALj.WA_NUMBER}?text=${waText}`;
 
-  const submitLead = () => {
-    const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  const submitLead = async () => {
+    const ok = window.isValidEmail?.(email) ?? false;
     if (!ok) { setLeadState("error"); return; }
+
+    const lead = {
+      type: "lead",
+      email: email.trim(),
+      title: result.title_suggestion,
+      emotion: result.emotion,
+      palette: result.palette,
+      story: result.story_essence,
+      lang,
+      at: new Date().toISOString(),
+    };
+
+    try {
+      await window.sendToGoogleSheet?.(lead);
+    } catch (e) {
+      // ignore sheet failure and keep fallback
+    }
+
     try {
       const leads = JSON.parse(localStorage.getItem("almarte_leads") || "[]");
-      leads.push({ email: email.trim(), title: result.title_suggestion, emotion: result.emotion,
-        palette: result.palette, story: result.story_essence, lang, at: new Date().toISOString() });
+      leads.push(lead);
       localStorage.setItem("almarte_leads", JSON.stringify(leads));
     } catch (e) {}
+
     setLeadState("done");
   };
 

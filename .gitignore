@@ -17,3 +17,11 @@ desktop.ini
 node_modules/
 dist/
 .cache/
+
+# Local runtime config (do NOT commit secrets)
+config.js
+.env
+
+# Python virtualenvs
+venv/
+.venv/

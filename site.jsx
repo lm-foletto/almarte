@@ -639,7 +639,7 @@ function HowItWorks({ t }) {
       </div>
       <div className="s-how-row">
         <RevealC className="s-how-media" slow>
-          <video className="s-vid" src="videos/Movie_3.mp4" muted loop autoPlay playsInline
+          <video className="s-vid" src="videos/Movie_3.mp4" muted autoPlay playsInline
             preload="metadata" id="ga-video-how" data-ga="video-play" data-video="how-journey" />
         </RevealC>
         <div className="s-steps">
@@ -694,7 +694,7 @@ function Invite({ t, onCreate }) {
           </RevealC>
         </div>
         <RevealC className="s-invite-vid-wrap" slow>
-          <video ref={vidRef} className="s-vid" src="videos/Movie_4.mp4" muted loop autoPlay playsInline
+          <video ref={vidRef} className="s-vid" src="videos/Movie_4.mp4" muted autoPlay playsInline
             preload="metadata" id="ga-video-invite" data-ga="video-play" data-video="invite-artist" />
           <button className="s-unmute" onClick={toggleSound}
             aria-label={muted ? t.invite.unmute : t.invite.mute} id="ga-video-invite-sound">
@@ -714,14 +714,28 @@ function Footer({ t, onNav }) {
   const [email, setEmail] = useState("");
   const [done, setDone] = useState(false);
   const [err, setErr] = useState(false);
-  const submit = () => {
-    const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  const submit = async () => {
+    const ok = window.isValidEmail?.(email) ?? false;
     if (!ok) { setErr(true); return; }
+
+    const entry = {
+      type: "newsletter",
+      email: email.trim(),
+      at: new Date().toISOString(),
+    };
+
+    try {
+      await window.sendToGoogleSheet?.(entry);
+    } catch (e) {
+      // ignore sheet failure and keep fallback
+    }
+
     try {
       const subs = JSON.parse(localStorage.getItem("almarte_subscribers") || "[]");
-      subs.push({ email: email.trim(), at: new Date().toISOString() });
+      subs.push(entry);
       localStorage.setItem("almarte_subscribers", JSON.stringify(subs));
     } catch (e) {}
+
     setDone(true);
   };
   return (
