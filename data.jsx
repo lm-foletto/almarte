@@ -19,7 +19,7 @@ const C = {
 };
 
 /* WhatsApp placeholder — troque 55SEUNUMERO pelo número real */
-const WA_NUMBER = "55SEUNUMERO";
+const WA_NUMBER = "5599984077";
 const IG_HANDLE = "almarte.arts";
 
 /* -------- Collection: feelings that became works (painterly placeholders)

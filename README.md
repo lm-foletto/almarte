@@ -30,3 +30,9 @@ Acesse http://localhost:8000
 ## Deploy
 
 Pode ser publicado direto via **GitHub Pages** (raiz do repositório).
+
+Este projeto deve ser acessado em:
+
+- `https://lm-foletto.github.io/almarte`
+
+O deploy automático já está configurado via GitHub Actions para a branch `main`.

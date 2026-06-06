@@ -106,14 +106,20 @@ const { Artwork: ArtworkC, Reveal: RevealC, useReveal: useRevealH, useScrollPara
   .s-sign { font-family: var(--script); font-size: 46px; color: var(--accent-deep); margin-top: 12px; line-height: 1; }
   @media (max-width: 860px){ .s-story { grid-template-columns: 1fr; } }
 
-  /* PHOTO placeholder */
-  .s-photo { position: relative; aspect-ratio: 4/5; border-radius: 2px; overflow: hidden;
-    background: repeating-linear-gradient(135deg, #EFE8DC 0 14px, #EAE2D4 14px 28px);
-    border: 1px solid var(--line); box-shadow: 0 30px 70px -34px rgba(45,40,35,0.35);
-    display: flex; align-items: center; justify-content: center; }
-  .s-photo span { font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: .12em;
-    text-transform: uppercase; color: var(--ink-faint); background: rgba(250,247,241,.7);
-    padding: 6px 12px; border-radius: 3px; }
+  /* PHOTO mockup placeholder */
+  .s-photo { position: relative; aspect-ratio: 4/5; border-radius: 22px; overflow: hidden;
+    background: linear-gradient(180deg, #F7F2EA 0%, #EDE6D8 100%);
+    border: 1px solid rgba(45,40,35,0.08); box-shadow: 0 30px 70px -34px rgba(45,40,35,0.35);
+    display: grid; place-items: center; }
+  .s-photo::before { content: '';
+    position: absolute; inset: 0; pointer-events: none;
+    box-shadow: inset 0 0 0 12px rgba(255,255,255,0.92), inset 0 0 0 1px rgba(45,40,35,0.06);
+  }
+  .s-photo span { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%);
+    font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--ink-faint); background: rgba(250,247,241,.85);
+    padding: 6px 12px; border-radius: 3px; z-index: 1; }
+  .s-photo svg { width: 100%; height: 100%; object-fit: cover; }
 
   /* COLLECTION */
   .s-col-intro { max-width: 720px; margin: 0 auto clamp(50px,8vh,96px); text-align: center; }
@@ -150,8 +156,10 @@ const { Artwork: ArtworkC, Reveal: RevealC, useReveal: useRevealH, useScrollPara
   .s-test-quote { font-family: var(--serif); font-weight: 300; font-style: italic;
     font-size: clamp(16px, 1.5vw, 19px); line-height: 1.55; color: var(--ink); position: relative; z-index: 1; }
   .s-test-by { margin-top: auto; padding-top: 24px; display: flex; align-items: center; gap: 12px; }
-  .s-test-orb { width: 38px; height: 38px; border-radius: 50%; overflow: hidden; flex-shrink: 0;
-    box-shadow: inset 0 0 0 1px rgba(45,40,35,0.08); }
+  .s-test-orb { width: 62px; height: 62px; border-radius: 16px; overflow: hidden; flex-shrink: 0;
+    box-shadow: 0 20px 45px -24px rgba(45,40,35,0.34); border: 1px solid rgba(45,40,35,0.08);
+    background: #fff; display: grid; place-items: center; }
+  .s-test-orb svg { width: 100%; height: 100%; display: block; }
   .s-test-who { display: flex; flex-direction: column; gap: 3px; }
   .s-test-name { font-size: 14.5px; font-weight: 600; color: var(--ink); line-height: 1.25; }
   .s-test-role { font-size: 12.5px; color: var(--ink-soft); letter-spacing: .01em; line-height: 1.25; }
@@ -421,6 +429,7 @@ function Story({ t }) {
     <section className="s-sec" id="story">
       <div className="s-story">
         <RevealC className="s-photo" slow>
+          <ArtworkC palette={ALdata.collection[2].palette} seed={28} swirls={true} style={{ width: "100%", height: "100%" }} />
           <span>{t.story.caption}</span>
         </RevealC>
         <div>
