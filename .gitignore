@@ -1,0 +1,19 @@
+# Documentos pesados / não usados pelo site
+uploads/*.pdf
+.thumbnail
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editores
+.vscode/
+.idea/
+*.swp
+*~
+
+# Dependências (caso adicione build no futuro)
+node_modules/
+dist/
+.cache/

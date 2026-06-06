@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Almarte — A sua alma em forma de cor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&family=Mulish:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Allura&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #FAF7F1;
+    --bg-deep: #F3EEE4;
+    --surface: #FFFFFF;
+    --ink: #2D2823;
+    --ink-soft: #857B70;
+    --ink-faint: #B4A99A;
+    --accent: #BC5B3C;
+    --accent-deep: #993C1D;
+    --accent-soft: #EFE2D9;
+    --line: #E8E1D6;
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'Mulish', -apple-system, sans-serif;
+    --script: 'Allura', cursive;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 400;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+  ::selection { background: var(--accent-soft); color: var(--accent-deep); }
+  img { display: block; max-width: 100%; }
+  button { font-family: inherit; }
+  a { color: inherit; }
+
+  /* Global paper grain */
+  .grain-fixed {
+    position: fixed; inset: 0; z-index: 9000;
+    pointer-events: none; opacity: 0.5; mix-blend-mode: multiply;
+  }
+
+  /* Reveal primitives */
+  .rv { opacity: 0; transform: translateY(34px); transition: opacity 1.1s cubic-bezier(.16,.7,.2,1), transform 1.1s cubic-bezier(.16,.7,.2,1); will-change: opacity, transform; }
+  .rv.in { opacity: 1; transform: none; }
+  .rv-slow { transition-duration: 1.5s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .rv { opacity: 1 !important; transform: none !important; transition: none !important; }
+    * { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+  }
+
+  #root { position: relative; z-index: 1; }
+
+  /* Scrollbar (subtle) */
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: #DDD3C5; border-radius: 10px; border: 3px solid var(--bg); }
+</style>
+</head>
+<body>
+  <!-- fixed paper grain overlay -->
+  <svg class="grain-fixed" xmlns="http://www.w3.org/2000/svg">
+    <filter id="paperGrain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" stitchTiles="stitch" />
+      <feColorMatrix type="saturate" values="0" />
+      <feComponentTransfer><feFuncA type="linear" slope="0.045" /></feComponentTransfer>
+    </filter>
+    <rect width="100%" height="100%" filter="url(#paperGrain)" />
+  </svg>
+
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <script type="text/babel" src="data.jsx"></script>
+  <script type="text/babel" src="artwork.jsx"></script>
+  <script type="text/babel" src="overture.jsx"></script>
+  <script type="text/babel" src="site.jsx"></script>
+  <script type="text/babel" src="cocreate.jsx"></script>
+  <script type="text/babel" src="app.jsx"></script>
+</body>
+</html>
