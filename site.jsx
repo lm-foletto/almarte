@@ -315,6 +315,40 @@ const { Artwork: ArtworkC, Reveal: RevealC, useReveal: useRevealH, useScrollPara
   }
   /* avoid sideways overscroll from wash bleed on small screens */
   @media (max-width: 560px){ .s-wash-div { height: clamp(96px, 18vh, 160px); } }
+
+  /* ---- SECTION VIDEOS ---- */
+  .s-vid { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  /* How it works — video (Vídeo 3) beside the 4 steps */
+  .s-how-row { max-width: 1140px; margin: 0 auto; display: grid;
+    grid-template-columns: 0.92fr 1.08fr; gap: clamp(28px, 4vw, 60px); align-items: center; }
+  .s-how-media { position: relative; border-radius: 6px; overflow: hidden; aspect-ratio: 4/5;
+    background: var(--bg-deep); box-shadow: 0 30px 70px -30px rgba(45,40,35,.42); }
+  .s-how-row .s-steps { grid-template-columns: repeat(2, 1fr); max-width: none; row-gap: 38px; }
+  .s-how-row .s-step-link { display: none; }
+  @media (max-width: 860px){
+    .s-how-row { grid-template-columns: 1fr; }
+    .s-how-media { aspect-ratio: 16/10; max-width: 520px; margin: 0 auto; }
+    .s-how-row .s-steps { grid-template-columns: 1fr; max-width: 360px; }
+  }
+
+  /* Invite — vertical video (Vídeo 4) with unmute */
+  .s-invite-grid { position: relative; display: grid; grid-template-columns: 1fr 0.66fr;
+    gap: clamp(34px, 5vw, 72px); align-items: center; max-width: 1080px; margin: 0 auto; text-align: left; }
+  .s-invite-grid .s-invite-inner { margin: 0; text-align: left; }
+  .s-invite-vid-wrap { position: relative; border-radius: 8px; overflow: hidden; aspect-ratio: 9/16;
+    max-width: 300px; width: 100%; justify-self: center; background: #000;
+    box-shadow: 0 30px 70px -28px rgba(45,40,35,.5); }
+  .s-unmute { position: absolute; bottom: 14px; right: 14px; z-index: 3; display: flex; align-items: center;
+    gap: 7px; padding: 9px 14px; border: none; border-radius: 40px; background: rgba(20,17,14,.62);
+    color: #F7EFE2; font-family: var(--sans); font-size: 12px; letter-spacing: .06em; cursor: pointer;
+    backdrop-filter: blur(6px); transition: background .3s; }
+  .s-unmute:hover { background: rgba(20,17,14,.85); }
+  @media (max-width: 860px){
+    .s-invite-grid { grid-template-columns: 1fr; text-align: center; }
+    .s-invite-grid .s-invite-inner { text-align: center; }
+    .s-invite-vid-wrap { order: -1; max-width: 240px; }
+  }
   `;
   const el = document.createElement("style");
   el.id = "almarte-site-css";
@@ -594,16 +628,22 @@ function HowItWorks({ t }) {
         </RevealC>
         <RevealC as="h2" className="s-how-h" delay={80}>{h.title}</RevealC>
       </div>
-      <div className="s-steps">
-        {h.steps.map((s, i) => (
-          <RevealC className="s-step" key={i} delay={i * 130}>
-            <div className="s-step-link"></div>
-            <div className="s-step-ico"><StepIcon kind={s.icon} /></div>
-            <span className="s-step-n">0{i + 1}</span>
-            <div className="s-step-t">{s.title}</div>
-            <p className="s-step-b">{s.body}</p>
-          </RevealC>
-        ))}
+      <div className="s-how-row">
+        <RevealC className="s-how-media" slow>
+          <video className="s-vid" src="videos/Movie_3.mp4" muted loop autoPlay playsInline
+            preload="metadata" id="ga-video-how" data-ga="video-play" data-video="how-journey" />
+        </RevealC>
+        <div className="s-steps">
+          {h.steps.map((s, i) => (
+            <RevealC className="s-step" key={i} delay={i * 130}>
+              <div className="s-step-link"></div>
+              <div className="s-step-ico"><StepIcon kind={s.icon} /></div>
+              <span className="s-step-n">0{i + 1}</span>
+              <div className="s-step-t">{s.title}</div>
+              <p className="s-step-b">{s.body}</p>
+            </RevealC>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -611,27 +651,47 @@ function HowItWorks({ t }) {
 
 /* ---- Invite (handoff) ---- */
 function Invite({ t, onCreate }) {
+  const vidRef = useRef(null);
+  const [muted, setMuted] = useState(true);
+  const toggleSound = () => {
+    const v = vidRef.current;
+    if (!v) return;
+    v.muted = !v.muted;
+    if (!v.muted) { v.play().catch(() => {}); }
+    setMuted(v.muted);
+  };
   return (
     <section className="s-invite" id="invite">
       <div className="s-invite-wash">
         <ArtworkC palette={ALdata.HERO_PALETTE} seed={11} sparkle={false} swirls={true} style={{ width: "100%", height: "100%" }} />
       </div>
-      <div className="s-invite-inner">
-        <RevealC className="s-eyebrow center">
-          <span className="s-secnum">{t.invite.num}</span>
-          <span className="rule"></span>
-          <span className="s-seckick">{t.invite.kicker}</span>
-        </RevealC>
-        <h2 className="s-invite-h">
-          <RevealC as="span" style={{ display: "block" }}>{t.invite.title[0]}</RevealC>
-          <RevealC as="span" delay={120} style={{ display: "block" }}><em>{t.invite.title[1]}</em></RevealC>
-        </h2>
-        <RevealC as="p" className="s-invite-body" delay={220}>{t.invite.body}</RevealC>
-        <RevealC delay={320}>
-          <button className="s-invite-cta" id="ga-invite-create" onClick={onCreate}>
-            {t.invite.cta}<span className="ar">→</span>
+      <div className="s-invite-grid">
+        <div className="s-invite-inner">
+          <RevealC className="s-eyebrow center">
+            <span className="s-secnum">{t.invite.num}</span>
+            <span className="rule"></span>
+            <span className="s-seckick">{t.invite.kicker}</span>
+          </RevealC>
+          <h2 className="s-invite-h">
+            <RevealC as="span" style={{ display: "block" }}>{t.invite.title[0]}</RevealC>
+            <RevealC as="span" delay={120} style={{ display: "block" }}><em>{t.invite.title[1]}</em></RevealC>
+          </h2>
+          <RevealC as="p" className="s-invite-body" delay={220}>{t.invite.body}</RevealC>
+          <RevealC delay={320}>
+            <button className="s-invite-cta" id="ga-invite-create" onClick={onCreate}>
+              {t.invite.cta}<span className="ar">→</span>
+            </button>
+            <div className="s-invite-time">{t.invite.time}</div>
+          </RevealC>
+        </div>
+        <RevealC className="s-invite-vid-wrap" slow>
+          <video ref={vidRef} className="s-vid" src="videos/Movie_4.mp4" muted loop autoPlay playsInline
+            preload="metadata" id="ga-video-invite" data-ga="video-play" data-video="invite-artist" />
+          <button className="s-unmute" onClick={toggleSound}
+            aria-label={muted ? t.invite.unmute : t.invite.mute} id="ga-video-invite-sound">
+            <span aria-hidden="true">{muted ? "🔇" : "🔊"}</span>
+            <span>{muted ? t.invite.unmute : t.invite.mute}</span>
           </button>
-          <div className="s-invite-time">{t.invite.time}</div>
         </RevealC>
       </div>
     </section>

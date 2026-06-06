@@ -171,8 +171,8 @@ const T = {
       steps: [
         { icon: "chat", title: "Escolha ou co-crie", body: "Uma obra da coleção ou uma história só sua." },
         { icon: "brush", title: "A artista pinta", body: "À mão, devagar, interpretando a sua direção." },
-        { icon: "box", title: "Embalagem segura", body: "Proteção profissional para envio pelos Correios." },
-        { icon: "frame", title: "Na sua parede", body: "Entrega para todo o Brasil." },
+        { icon: "box", title: "Embalagem segura", body: "Proteção e envio até sua casa." },
+        { icon: "frame", title: "Na sua parede", body: "Consulte disponibilidade de entrega pelo WhatsApp." },
       ],
     },
     invite: {
@@ -182,6 +182,8 @@ const T = {
       body: "Toda obra aqui começou como um sentimento sem forma. A próxima pode ser a sua. Você não precisa saber pintar — só sentir. Eu cuido do resto.",
       cta: "Criar a minha obra",
       time: "Leva menos de 2 minutos.",
+      unmute: "Ouvir a artista",
+      mute: "Silenciar",
     },
     footer: {
       tag: "A sua alma em forma de cor.",
@@ -275,6 +277,8 @@ const T = {
       body: "Every work here began as a feeling with no shape. The next one could be yours. You don't need to know how to paint — only to feel. I'll take care of the rest.",
       cta: "Create my work",
       time: "Takes under 2 minutes.",
+      unmute: "Hear the artist",
+      mute: "Mute",
     },
     footer: {
       tag: "Your soul, made colour.",
